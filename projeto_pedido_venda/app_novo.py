@@ -27,7 +27,7 @@ def buscar_pedido(pedido_id):
     # Obtém o endereço IP associado ao hostname
     #ip_address = socket.gethostbyname(hostname)
     #st.success(ip_address) 
-    server   = '172.16.0.1\SQLEXPRESS'
+    server   = '192.168.8.165\SQLEXPRESS'
     database = 'SAFV_3090'
     username = 'sa'
     password = 'fenix' 
@@ -70,8 +70,8 @@ def buscar_pedido(pedido_id):
     return pedido
 # Função para buscar os dados do pedido
 def buscar_item_pedido(pedido_id):
-    # Configurações de conexão
-    server   = '172.16.0.1\SQLEXPRESS'
+    # Configurações de conexão 
+    server   = '192.168.8.165\SQLEXPRESS'
     database = 'SAFV_3090'
     username = 'sa'
     password = 'fenix' 
@@ -288,7 +288,7 @@ def enviar_email(destinatario, pedido, pdf_buffer):
         "Estamos felizes em fazer parte do seu Natal 2025.<br>"
         "Obrigado pela presença em nosso evento!<br><br>"  
         f"<strong>Observação:</strong> {observacao}<br><br>"  # Inclusão da observação
-        '<img src="cid:logo_Email.jpg" alt="Imagem do Pedido" style="width:300px;"><br>'
+        '<img src="cid:logo_Email.jpeg" alt="Imagem do Pedido" style="width:300px;"><br>'
     )
     parte_html = MIMEText(body, "html")
     msg.attach(parte_html)
@@ -320,11 +320,26 @@ for key in ["pedido_id", "cliente", "email"]:
         st.session_state[key] = ""
 
 def buscar_e_atualizar_pedido():
-    pedido_id = st.session_state["pedido_id"]
-    if pedido_id:
-        pedido = buscar_pedido(pedido_id)
-        st.session_state["cliente"] = pedido[6]
-        st.session_state["email"] = pedido[13] 
+    pedido_id = st.session_state.get("pedido_id")
+    
+    # Validação inicial para garantir que o ID é uma string numérica
+    if not pedido_id or not pedido_id.isdigit():
+        st.error("Pedido não encontrado.")  # Pedido inválido
+        return
+
+    # Convertendo para inteiro, se necessário (supondo que o banco espera um ID numérico)
+    pedido_id = int(pedido_id)
+    
+    try:
+        pedido = buscar_pedido(pedido_id)  # Realiza a busca no banco
+        
+        if pedido:
+            st.session_state["cliente"] = pedido[6]
+            st.session_state["email"] = pedido[13]
+        else:
+            st.error("Pedido não encontrado.")  # Pedido não encontrado no banco
+    except Exception as e:
+        st.error(f"Ocorreu um erro ao buscar o pedido: {e}")  # Tratamento de erro geral
 
 
 # Campo fora do formulário para capturar o ID do Pedido

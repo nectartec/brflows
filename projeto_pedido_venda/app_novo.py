@@ -12,6 +12,8 @@ from email.mime.application import MIMEApplication
 import os
 import socket
 from textwrap import wrap
+from PIL import Image
+
 # Configurações de E-mail
 SMTP_SERVER = "smtp.office365.com"
 SMTP_PORT = 587
@@ -226,7 +228,7 @@ def gerar_pdf(nr_pedido, codigo_cli, nome_cli, ender,
 
         for coluna_index, item in enumerate(linha):
             if coluna_index == 0 and linha_index > 0:  # Primeira coluna: imagem
-                caminho_imagem = os.path.join("imagem", f"{linha[1]}.jpg")
+                caminho_imagem = os.path.join("imagens_comprimidas", f"{linha[1]}.jpg")
                 if os.path.exists(caminho_imagem):
                     desenhar_celula(x, y, largura_colunas[coluna_index], altura_celula, imagem=True, caminho_imagem=caminho_imagem)
                 else:

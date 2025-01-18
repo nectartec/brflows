@@ -37,7 +37,7 @@ def buscar_cinco_pedidos():
 
     # Consulta SQL para buscar os 5 próximos pedidos
     query = """
-    SELECT TOP 5
+    SELECT
         mp.SUBTOTAL,
         mp.DESC_FINANCEIRO,
         mp.VLRDESC_FINANCEIRO,
@@ -347,22 +347,12 @@ if st.session_state["pedidos"]:
     df = pd.DataFrame.from_records(st.session_state["pedidos"], columns=colunas)
     st.dataframe(df)
 
-    # Campos de texto para editar os e-mails
-    for pedido in st.session_state["pedidos"]:
-        pedido_id = pedido[4]
-        nome_cliente = pedido[6]
-        st.session_state["email_map"][pedido_id] = st.text_input(
-            f"E-mail do Cliente ({nome_cliente} - Pedido {pedido_id}):",
-            value=st.session_state["email_map"][pedido_id],
-            key=f"email_{pedido_id}"
-        )
-
     # Botão para enviar os pedidos
-    if st.button("Enviar Pedidos Selecionados"):
+    if st.button("Enviar Pedidos para Todos os Clientes"):
         for pedido in st.session_state["pedidos"]:
             try:
                 # Dados do pedido
-                Email = st.session_state["email_map"].get(pedido[4], "")
+                Email = pedido[13]  # O e-mail do cliente já está na posição 13
                 pdf_buffer = gerar_pdf(
                     pedido[4], pedido[5], pedido[6], pedido[7], pedido[8], pedido[9],
                     pedido[10], pedido[11], pedido[12], Email, pedido[14], pedido[15],
@@ -376,3 +366,4 @@ if st.session_state["pedidos"]:
 
             except Exception as e:
                 st.error(f"Erro ao enviar o pedido {pedido[4]}: {e}")
+

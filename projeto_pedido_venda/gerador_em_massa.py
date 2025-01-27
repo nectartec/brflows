@@ -62,6 +62,7 @@ def buscar_cinco_pedidos():
     JOIN CAD_CLIENTES cc ON mp.CLIENTE = cc.CODIGO
     JOIN CAD_REPRESENTANTES cr ON mp.REPRESENTANTE = cr.CODIGO
     JOIN CAD_CONDICOES cnd ON mp.CONDICAO = cnd.CODIGO
+    where status <> 9
     ORDER BY mp.PEDIDO ASC
     """
 
@@ -95,6 +96,7 @@ def buscar_item_pedido(pedido_id):
     FROM MOV_ITPEDIDO
     JOIN CAD_PRODUTO ON MOV_ITPEDIDO.PRODUTO = CAD_PRODUTO.CODIGO
     WHERE MOV_ITPEDIDO.PEDIDO  = ?
+    and status <> 9
     """
     cursor.execute(query, (pedido_id,))
     item_pedido = cursor.fetchall()  # Retorna todas as linhas

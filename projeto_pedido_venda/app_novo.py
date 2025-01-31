@@ -13,7 +13,7 @@ import os
 import socket
 from textwrap import wrap
 from PIL import Image
-
+from pathlib import Path
 # Configurações de E-mail
 SMTP_SERVER = "smtp.office365.com"
 SMTP_PORT = 587
@@ -271,6 +271,7 @@ def gerar_pdf(nr_pedido, codigo_cli, nome_cli, ender,
     c.save()
     pdf_buffer.seek(0)
     return pdf_buffer
+ 
 
 # Função para enviar o e-mail com o PDF anexado
 def enviar_email(destinatario, pedido, pdf_buffer):
@@ -358,8 +359,7 @@ with st.form("pedido_form"):
     email = st.text_input("E-mail do Cliente", key="email")
     observacao = st.text_area("Observação")
     enviado = st.form_submit_button("Enviar Pedido")
-    
- 
+    salvar_pdf = st.form_submit_button("Salvar Pedido")
         
 if enviado:
     if pedido_id:
@@ -395,3 +395,47 @@ if enviado:
             st.error("Pedido não encontrado.")
     else:
         st.error("Por favor, insira o ID do pedido.")
+# Definir a pasta onde o PDF será salvo
+pasta_destino = "E:/POWERBI/projeto_pedido_venda/pdf_salvar"  # Alterar para o caminho desejado
+Path(pasta_destino).mkdir(parents=True, exist_ok=True)  # Criar pasta se não existir        
+if salvar_pdf:
+    if pedido_id:
+        pedido= buscar_pedido(pedido_id)
+        if pedido:           
+            Subtotal           = pedido[0]
+            DescontoFinanceiro = pedido[1]
+            ValorDesconto      = pedido[2]
+            vlTOTAL    = pedido[3]
+            nr_pedido  = pedido[4] 
+            codigo_cli = pedido[5]
+            nome_cli   = pedido[6]
+            ender      = pedido[7]
+            nom_cidade = pedido[8]
+            cep        = pedido[9]
+            cnpj       = pedido[10]
+            inscrEst   = pedido[11]
+            Telefone   = pedido[12]
+            Email      = pedido[13]
+            Fax        = pedido[14]
+            Transportadora    = pedido[15] 
+            NomeRepresentante = pedido[16] 
+            Inicio            = pedido[17]
+            NomeCondicao      = pedido[18]
+            #observacao = observacao
+            pdf_buffer = gerar_pdf(nr_pedido, codigo_cli, nome_cli, ender, nom_cidade, cep,
+                                    cnpj, inscrEst, Telefone, Email, Fax, Transportadora,
+                                    NomeRepresentante, Inicio, NomeCondicao,
+                                    vlTOTAL, Subtotal, DescontoFinanceiro, ValorDesconto, observacao)
+                  
+            # Nome do arquivo PDF
+            nome_pdf = f"{nr_pedido}.pdf" 
+            caminho_completo = os.path.join(pasta_destino, nome_pdf)
+            # Salvar o buffer na pasta destino
+            with open(caminho_completo, "wb") as f:
+                f.write(pdf_buffer.getvalue())
+                
+            st.success(f"PDF salvo com sucesso... {caminho_completo}")
+        else:
+            st.error("Pedido não encontrado.")
+    else:
+        st.error("Por favor, insira o ID do pedido.")    

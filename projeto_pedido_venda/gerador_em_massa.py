@@ -25,7 +25,7 @@ def buscar_cinco_pedidos():
     Busca automaticamente os próximos 5 pedidos do banco de dados.
     """
     # Configurações de conexão
-    server = '192.168.8.165\\SQLEXPRESS'
+    server = '172.16.0.1\SQLEXPRESS'
     database = 'SAFV_3090'
     username = 'sa'
     password = 'fenix'
@@ -75,7 +75,7 @@ def buscar_cinco_pedidos():
 # Função para buscar os dados do pedido
 def buscar_item_pedido(pedido_id):
     # Configurações de conexão 
-    server   = '192.168.8.165\SQLEXPRESS'
+    server   = '172.16.0.1\SQLEXPRESS'
     database = 'SAFV_3090'
     username = 'sa'
     password = 'fenix' 

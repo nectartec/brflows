@@ -10,8 +10,8 @@ def inicializacao():
         st.session_state.mensagens = []
     if not 'conversa_atual' in st.session_state:
         st.session_state.conversa_atual = ''
-    if not 'modelo' in st.session_state:
-        st.session_state.modelo = 'gpt-3.5-turbo'
+    # if not 'modelo' in st.session_state:
+    #     st.session_state.modelo = 'gpt-3.5-turbo'
     if not 'api_key' in st.session_state:
         st.session_state.api_key = le_chave()
     if not 'assistant_key' in st.session_state:
@@ -44,9 +44,9 @@ def seleciona_conversa(nome_arquivo):
     st.session_state['conversa_atual'] = nome_arquivo
 
 def tab_configuracoes(tab):
-    modelo_escolhido = tab.selectbox('Selecione o modelo',
-                                     ['gpt-3.5-turbo', 'gpt-4'])
-    st.session_state['modelo'] = modelo_escolhido
+    # modelo_escolhido = tab.selectbox('Selecione o modelo',
+    #                                  ['gpt-3.5-turbo', 'gpt-4'])
+    # st.session_state['modelo'] = modelo_escolhido
 
     chave = tab.text_input('Adicione sua api key', value=st.session_state['api_key'])
     if chave != st.session_state['api_key']:

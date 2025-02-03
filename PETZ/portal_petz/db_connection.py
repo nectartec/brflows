@@ -5,5 +5,6 @@ def connect_to_db():
         host="localhost",  # Altere para o host do seu banco
         database="petz",  # Nome do banco
         user="postgres",  # Usuário do banco
-        password="admin"  # Senha do banco
+        password="admin" # Senha do banco
+         
     )

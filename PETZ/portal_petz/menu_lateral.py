@@ -1,7 +1,7 @@
 import streamlit as st
 from login import login_screen
 from visualizar import view_grades
-from alterar import edit_grades
+from alterar import edit_nfse
 from incluir_usuarios import incluir_usuario  # Importe a função
 
 def menu_lateral():
@@ -18,7 +18,7 @@ def menu_lateral():
         if option == "Visualizar Notas":
             view_grades()
         elif option == "Alterar Notas":
-            edit_grades()
+            edit_nfse()
         elif option == "Incluir Usuário":
             incluir_usuario()    
         elif option == "Sair":

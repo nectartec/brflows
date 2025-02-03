@@ -9,25 +9,46 @@ def get_user_grades(departamento_id):
     conn.close()
     return grades
 
-def update_grade(grade_id, nome_razao_social_tomador):
+def update_nfse(numero_nota, nome_razao_social_tomador, campo2, campo3, campo4, campo5, campo6):
     conn = connect_to_db()
     cur = conn.cursor()
-    cur.execute("UPDATE  SET nome_razao_social_tomador = %s WHERE id = %s", (nome_razao_social_tomador, grade_id))
+    query = """
+    UPDATE nfse
+    SET nome_razao_social_tomador = %s,
+        status = 'ARQUIVO_ALTERADO'
+    WHERE numero_nota = %s
+    """
+    
+    cur.execute(query, (nome_razao_social_tomador,numero_nota))
     conn.commit()
     conn.close()
 
-def edit_grades():
-    '''
-    st.subheader("Alterar Nota")
-    grades = get_user_grades(st.session_state.departamento_id)
-    if grades:
-        grade_options = {f"{grade[1]} (Nota: {grade[2]})": grade[0] for grade in grades}
-        selected_grade = st.selectbox("Selecione a matéria para alterar:", list(grade_options.keys()))
-        new_grade = st.number_input("Nova nota:", min_value=0.0, max_value=100.0, step=0.1)
+def edit_nfse():
+    st.subheader("Alterar Nota Fiscal")
+    nfse_list = get_user_grades(st.session_state.departamento_id)
+    if nfse_list:
+        # Alteração: armazena o numero_nota no dicionário para que seja usado como filtro
+        nfse_options = {f"Nota: {nfse[3]}": nfse for nfse in nfse_list}
+        selected_nfse = st.selectbox("Selecione a Nota Fiscal para alterar:", list(nfse_options.keys()))
+        # Obtém a nota fiscal selecionada (toda a tupla)
+        
+         # Obtém a tupla da nota selecionada
+        selected_nfse_data = nfse_options[selected_nfse] 
+        # Campos a serem alterados
+        nome_razao_social_tomador = st.text_input("Nome/Razão Social do Tomador",value = selected_nfse_data[15] )
+        campo2 = st.text_input("Endereço Prestador")
+        campo3 = st.text_input("Municipio Prestador")
+        campo4 = st.text_input("Endereço Tomador")
+        campo5 = st.text_input("Municipio Tomador")
+        campo6 = st.text_input("E-mail Tomador")
+           
         if st.button("Salvar"):
-            grade_id = grade_options[selected_grade]
-            update_grade(grade_id, nome_razao_social_tomador)
-            st.success("Nota atualizada com sucesso!")
+            numero_nota = selected_nfse_data[3]      
+            numero_nota = str(numero_nota)       
+            update_nfse(numero_nota, nome_razao_social_tomador, campo2, campo3, campo4, campo5, campo6)
+            st.success("Nota Fiscal atualizada com sucesso!")
     else:
-        st.info("Nenhuma nota encontrada para alterar.")
-    '''    
+        st.info("Nenhuma Nota Fiscal encontrada para alterar.")
+
+if "departamento_id" not in st.session_state:
+    st.session_state.departamento_id = 1  # ou outro valor padrão ou proveniente do login

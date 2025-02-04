@@ -64,7 +64,7 @@ def pagina_principal():
     
     mensagens = ler_mensagens(st.session_state['mensagens'])
 
-    st.header('🤖 Petz Loja Chatbot', divider=True)
+    st.header('🤖 Petz Atendente Chatbot', divider=True)
 
     for mensagem in mensagens:
         chat = st.chat_message(mensagem['role'])

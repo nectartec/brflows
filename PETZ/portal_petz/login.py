@@ -1,15 +1,24 @@
 import streamlit as st
 from db_connection import connect_to_db
+import bcrypt
 
 def validate_login(email, password):
     conn = connect_to_db()
     cur = conn.cursor()
-    cur.execute("SELECT usuario_id, is_admin FROM usuarios WHERE email = %s AND senha_hash = %s", (email, password))
-    user = cur.fetchone()
-    conn.close()
     
+    # Busca o hash da senha armazenada no banco
+    cur.execute("SELECT usuario_id, senha_hash, is_admin FROM usuarios WHERE email = %s", (email,))
+    user = cur.fetchone()
+    
+    conn.close()
+
     if user:
-        return {"user_id": user[0], "is_admin": user[1]}
+        user_id, senha_hash, is_admin = user
+        
+        # Verifica se a senha fornecida corresponde ao hash armazenado
+        if bcrypt.checkpw(password.encode(), senha_hash.encode()):
+            return {"user_id": user_id, "is_admin": is_admin}
+
     return None
 
 def login_screen():

@@ -1,4 +1,5 @@
 import streamlit as st
+import bcrypt
 from db_connection import connect_to_db  # Função que conecta ao banco de dados
 from psycopg2 import sql
 
@@ -19,8 +20,13 @@ def is_admin(email):
 
     return False  # Se não encontrar o usuário, assume que não é admin
 
-# Função para incluir usuário no banco
-def insert_user(nome, email, senha_hash, is_admin=False):
+# Função para gerar hash seguro da senha
+def hash_password(password):
+    salt = bcrypt.gensalt()  # Gera um salt aleatório
+    return bcrypt.hashpw(password.encode(), salt).decode()  # Retorna a senha criptografada
+
+# Função para incluir usuário no banco com senha criptografada
+def insert_user(nome, email, senha, is_admin=False):
     conn = connect_to_db()
     cur = conn.cursor()
 
@@ -39,6 +45,9 @@ def insert_user(nome, email, senha_hash, is_admin=False):
         st.error("Departamento não definido na sessão.")
         conn.close()
         return
+
+    # Criptografa a senha antes de armazená-la
+    senha_hash = hash_password(senha)
 
     # Insere o novo usuário incluindo o departamento_id e o status de administrador
     cur.execute(

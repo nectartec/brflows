@@ -1,0 +1,2 @@
+Total NFs Processadas;Total NFs Sucesso;Total NFs Falhas;Percentual Sucesso;Percentual Falhas;Detalhes das Falhas
+2;1;1;50.00%;50.00%;['NF: 2036, CNPJ: 42628583000140, Inconsistência: NF ou CNPJ não encontrados no acompanhamento.']

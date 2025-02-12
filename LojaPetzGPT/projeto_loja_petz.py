@@ -48,7 +48,7 @@ def tab_configuracoes(tab):
     #                                  ['gpt-3.5-turbo', 'gpt-4'])
     # st.session_state['modelo'] = modelo_escolhido
 
-    chave = tab.text_input('Adicione sua api key', value=st.session_state['api_key'])
+    chave = 'ss' 
     if chave != st.session_state['api_key']:
         st.session_state['api_key'] = chave
         salva_chave(chave)
@@ -110,7 +110,7 @@ def main():
     pagina_principal()
     tab1, tab2 = st.sidebar.tabs(['Conversas', 'Configurações'])
     tab_conversas(tab1)
-    tab_configuracoes(tab2)
+    #tab_configuracoes(tab2)
 
 
 if __name__ == '__main__':

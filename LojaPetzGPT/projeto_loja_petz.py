@@ -108,7 +108,7 @@ def pagina_principal():
 def main():
     inicializacao()
     pagina_principal()
-    tab1, tab2 = st.sidebar.tabs(['Conversas', 'Configurações'])
+    tab1 , tab2 = st.sidebar.tabs(['Conversas','Configuração' ])
     tab_conversas(tab1)
     #tab_configuracoes(tab2)
 

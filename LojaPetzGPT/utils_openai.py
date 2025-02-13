@@ -17,7 +17,7 @@ def retorna_resposta_modelo(mensagens,
 
 
 def retorna_resposta_assistente(mensagens):
-    openai_key = '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'
+    openai_key = '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'
     assistant_id = 'asst_cbtwXlzPuCXZloblRXpg0Urb'
     openai.api_key = openai_key
     

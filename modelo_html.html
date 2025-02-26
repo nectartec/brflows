@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Power BI Embedded</title>
+    <script src="https://cdn.jsdelivr.net/npm/powerbi-client@2.10.0/dist/powerbi.min.js"></script>
+</head>
+<body>
+    <h2>Relatório Power BI</h2>
+    <div id="powerbi-container" style="width: 100%; height: 600px;"></div>
+
+    <script>
+        // Configuração do Power BI Embedded
+        var embedConfig = {
+            type: "report",
+            id: "SEU_REPORT_ID",
+            embedUrl: "https://app.powerbi.com/reportEmbed?reportId=SEU_REPORT_ID&groupId=SEU_WORKSPACE_ID",
+            accessToken: "SEU_TOKEN_DE_EMBED",
+            tokenType: powerbi.models.TokenType.Embed,
+            settings: {
+                filterPaneEnabled: false,
+                navContentPaneEnabled: true
+            }
+        };
+
+        // Local do iframe no HTML
+        var container = document.getElementById("powerbi-container");
+
+        // Inicializar o relatório
+        var report = powerbi.embed(container, embedConfig);
+    </script>
+</body>
+</html>

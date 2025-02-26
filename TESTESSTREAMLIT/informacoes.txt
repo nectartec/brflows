@@ -1,0 +1,64 @@
+🔹 1. CLIENT_ID (Application ID)
+Onde encontrar:
+Acesse o portal Microsoft Entra ID (Azure Active Directory).
+Vá para Microsoft Entra ID → Registros de Aplicativos.
+Selecione o aplicativo que você criou para o Power BI Embedded.
+O Application (client) ID é o CLIENT_ID.
+
+🔹 2. CLIENT_SECRET (Chave Secreta do Aplicativo)
+Onde encontrar:
+No mesmo local do CLIENT_ID, vá para Certificados e Segredos.
+Clique em Novo segredo do cliente.
+Escolha um período de expiração e clique em Adicionar.
+Copie o valor gerado (essa chave só aparece uma vez!) e use como CLIENT_SECRET.
+
+🔹 3. TENANT_ID (ID do Locatário)
+Onde encontrar:
+Acesse o Portal do Azure.
+Vá até Microsoft Entra ID.
+O ID do diretório (tenant) é o TENANT_ID.
+
+🔹 4. WORKSPACE_ID (ID do Espaço de Trabalho)
+Onde encontrar:
+No Power BI Service, vá até Espaços de Trabalho.
+Selecione o espaço de trabalho onde seu relatório está publicado.
+Na URL do navegador, veja o ID após groups/.
+Exemplo:
+bash
+Copiar
+Editar
+https://app.powerbi.com/groups/XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX/list
+O trecho XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX é o WORKSPACE_ID.
+
+
+🔹 5. REPORT_ID (ID do Relatório)
+Onde encontrar:
+No Power BI Service, abra o relatório que deseja embedar.
+Na URL do navegador, veja o ID após reports/.
+Exemplo:
+ruby
+Copiar
+Editar
+https://app.powerbi.com/groups/{WORKSPACE_ID}/reports/{REPORT_ID}/ReportSection
+O trecho {REPORT_ID} é o ID do relatório.
+
+🔹 6. DATASET_ID (ID do Conjunto de Dados)
+Onde encontrar:
+No Power BI Service, vá até o espaço de trabalho onde está o relatório.
+Acesse a aba Conjuntos de Dados.
+Clique nos três pontos (⋮) ao lado do dataset e vá em Configurações.
+Na URL do navegador, veja o ID após datasets/.
+Exemplo:
+bash
+Copiar
+Editar
+https://app.powerbi.com/groups/{WORKSPACE_ID}/datasets/{DATASET_ID}/details
+O trecho {DATASET_ID} é o ID do conjunto de dados.
+
+
+🔹 Como Gerenciar Vários Clientes no Power BI Embedded?
+Como todos os seus clientes acessam a mesma base de dados, o segredo é:
+✅ Usar apenas um aplicativo no Azure (um único CLIENT_ID, CLIENT_SECRET, TENANT_ID).
+✅ Configurar RLS no Power BI para restringir os dados por cliente.
+✅ Passar o identificador do cliente no embed token (por e-mail, ID, etc.).
+

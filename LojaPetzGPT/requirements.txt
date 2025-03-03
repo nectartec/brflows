@@ -3,5 +3,5 @@ python-dotenv
 ipykernel
 streamlit
 unidecode
-supabase==1.2.3
-postgrest==0.1.4
+supabase==2.13.0
+postgrest==0.19.3

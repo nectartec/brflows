@@ -1,7 +1,7 @@
 import openai
 import streamlit as st
 # API OPENAI ================================================
-openai_key = st.secrets["OPENAI_API_KEY"] 
+openai_key = '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' #st.secrets["OPENAI_API_KEY"] 
 def retorna_resposta_modelo(mensagens,
                             openai_key,
                             modelo='gpt-3.5-turbo',

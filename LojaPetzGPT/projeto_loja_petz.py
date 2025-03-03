@@ -1,33 +1,49 @@
 import streamlit as st
 import json
 import os
+import sqlite3
+
 
 from utils_openai import retorna_resposta_assistente
 from utils_files import *
 
-# Nome do arquivo onde os feedbacks serão armazenados
-FEEDBACK_FILE = "feedbacks.json"
+DATABASE_FILE = "feedbacks.db"  # Nome do arquivo do banco de dados
 
-# Função para carregar feedbacks do arquivo JSON
-def carregar_feedbacks():
-    if os.path.exists(FEEDBACK_FILE):
-        with open(FEEDBACK_FILE, "r", encoding="utf-8") as file:
-            return json.load(file)
-    return []
+def criar_tabela():
+    conn = sqlite3.connect(DATABASE_FILE)
+    cursor = conn.cursor()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS feedbacks (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            pergunta TEXT,
+            resposta TEXT,
+            util TEXT,
+            comentario TEXT
+        )
+    """)
+    conn.commit()
+    conn.close()
 
-# Função para salvar um novo feedback
 def salvar_feedback(pergunta, resposta, util, comentario):
-    feedbacks = carregar_feedbacks()
-    novo_feedback = {
-        "pergunta": pergunta,
-        "resposta": resposta,
-        "util": util,
-        "comentario": comentario
-    }
-    feedbacks.append(novo_feedback)
+    conn = sqlite3.connect(DATABASE_FILE)
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO feedbacks (pergunta, resposta, util, comentario)
+        VALUES (?, ?, ?, ?)
+    """, (pergunta, resposta, util, comentario))
+    conn.commit()
+    conn.close()
 
-    with open(FEEDBACK_FILE, "w", encoding="utf-8") as file:
-        json.dump(feedbacks, file, indent=4, ensure_ascii=False)
+def carregar_feedbacks():
+    conn = sqlite3.connect(DATABASE_FILE)
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM feedbacks")
+    feedbacks = cursor.fetchall()
+    conn.close()
+    return feedbacks
+
+# Cria a tabela se ela não existir
+criar_tabela()
 
 # INICIALIZAÇÃO ==================================================
 def inicializacao():

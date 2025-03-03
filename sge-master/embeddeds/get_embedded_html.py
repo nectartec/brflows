@@ -79,7 +79,14 @@ def get_embed_token(client_id, client_secret, tenant_id, report_id, workspace_id
         embed_url = f"https://api.powerbi.com/v1.0/myorg/groups/{workspace_id}/reports/{report_id}/GenerateToken"
         headers = {"Authorization": f"Bearer {access_token}", "Content-Type": "application/json"}
         body = {
-            "accessLevel": "View"            
+            "accessLevel": "View",
+            "identities": [
+                {
+                    "username": email,  # 🔥 Aqui aplicamos o filtro de RLS pelo ID do gerente
+                    "roles": ["rls_cliente"],  # 🔥 Nome da Role configurada no Power BI
+                    "datasets": [dataset_id]
+                }
+            ]            
         }
 
         response = requests.post(embed_url, headers=headers, json=body)

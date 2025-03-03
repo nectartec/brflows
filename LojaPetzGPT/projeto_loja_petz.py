@@ -1,49 +1,35 @@
 import streamlit as st
 import json
-import os
-import sqlite3
-
+import os 
+from supabase import create_client, Client
 
 from utils_openai import retorna_resposta_assistente
 from utils_files import *
 
-DATABASE_FILE = "feedbacks.db"  # Nome do arquivo do banco de dados
+SUPABASE_URL = st.secrets["SUPABASE_URL"] # use your supabase url
+SUPABASE_KEY = st.secrets["SUPABASE_KEY"] # use your supabase anon key
 
-def criar_tabela():
-    conn = sqlite3.connect(DATABASE_FILE)
-    cursor = conn.cursor()
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS feedbacks (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            pergunta TEXT,
-            resposta TEXT,
-            util TEXT,
-            comentario TEXT
-        )
-    """)
-    conn.commit()
-    conn.close()
+if not SUPABASE_URL or not SUPABASE_KEY:
+    st.error("Por favor, configure as variáveis de ambiente SUPABASE_URL e SUPABASE_KEY.")
+    st.stop()
+
+supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 def salvar_feedback(pergunta, resposta, util, comentario):
-    conn = sqlite3.connect(DATABASE_FILE)
-    cursor = conn.cursor()
-    cursor.execute("""
-        INSERT INTO feedbacks (pergunta, resposta, util, comentario)
-        VALUES (?, ?, ?, ?)
-    """, (pergunta, resposta, util, comentario))
-    conn.commit()
-    conn.close()
+    data, count = supabase.table("feedbacks").insert({
+        "pergunta": pergunta,
+        "resposta": resposta,
+        "util": util,
+        "comentario": comentario
+    }).execute()
+    return data, count
 
 def carregar_feedbacks():
-    conn = sqlite3.connect(DATABASE_FILE)
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM feedbacks")
-    feedbacks = cursor.fetchall()
-    conn.close()
-    return feedbacks
+    data, count = supabase.table("feedbacks").select("*").execute()
+    return data[1] if data and len(data) > 1 else []
 
-# Cria a tabela se ela não existir
-criar_tabela()
+
+ 
 
 # INICIALIZAÇÃO ==================================================
 def inicializacao():

@@ -1,14 +1,14 @@
 import streamlit as st
 import json
 import os 
-from supabase import create_client, Client
-
+from supabase import create_client, Client 
+import postgrest
 from utils_openai import retorna_resposta_assistente
 from utils_files import *
 
-SUPABASE_URL = st.secrets["SUPABASE_URL"] # use your supabase url
-SUPABASE_KEY = st.secrets["SUPABASE_KEY"] # use your supabase anon key
-
+SUPABASE_URL = st.secrets["SUPABASE_URL"]
+SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
+ 
 if not SUPABASE_URL or not SUPABASE_KEY:
     st.error("Por favor, configure as variáveis de ambiente SUPABASE_URL e SUPABASE_KEY.")
     st.stop()
@@ -16,13 +16,17 @@ if not SUPABASE_URL or not SUPABASE_KEY:
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 def salvar_feedback(pergunta, resposta, util, comentario):
-    data, count = supabase.table("feedbacks").insert({
-        "pergunta": pergunta,
-        "resposta": resposta,
-        "util": util,
-        "comentario": comentario
-    }).execute()
-    return data, count
+    try:
+        data, count = supabase.table("feedbacks").insert({
+            "pergunta": pergunta,
+            "resposta": resposta,
+            "util": util,
+            "comentario": comentario
+        }).execute()
+        return data, count
+    except postgrest.exceptions.APIError as e:
+        st.error(f"Erro ao salvar feedback: {e}")  # Imprime o objeto de exceção completo
+        return None, None
 
 def carregar_feedbacks():
     data, count = supabase.table("feedbacks").select("*").execute()
